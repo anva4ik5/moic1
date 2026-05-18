@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monitor Suite</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="login" class="login">
+    <div class="login-card">
+      <h1>Monitor Suite</h1>
+      <p class="muted">Введите admin-токен (см. лог сервера или <code>server/data/admin_token.txt</code>).</p>
+      <input id="token-input" type="password" placeholder="admin token" />
+      <button id="login-btn">Войти</button>
+      <p id="login-err" class="error"></p>
+    </div>
+  </div>
+
+  <div id="app" class="app hidden">
+    <header class="topbar">
+      <div class="brand">Monitor Suite</div>
+      <nav>
+        <button data-tab="agents" class="tab active">Агенты</button>
+        <button data-tab="rules" class="tab">Правила блокировки</button>
+        <button data-tab="screenshots" class="tab">Скриншоты</button>
+      </nav>
+      <div class="spacer"></div>
+      <div id="overview" class="overview"></div>
+      <button id="logout-btn" class="ghost">Выйти</button>
+    </header>
+
+    <main>
+      <section id="tab-agents" class="tab-panel active">
+        <div class="grid">
+          <div class="panel">
+            <h2>Агенты</h2>
+            <table id="agents-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>Хост</th><th>Польз.</th><th>ОС</th>
+                  <th>Online</th><th>Согласие</th><th>Скриншоты</th><th>Трекинг</th><th>Блок</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="panel" id="agent-detail-panel">
+            <h2 id="agent-detail-title">Выберите агента</h2>
+            <div id="agent-detail" class="hidden">
+              <div class="row">
+                <label>Скриншоты, сек (0 = выкл):
+                  <input type="number" id="d-interval" min="0" step="5" />
+                </label>
+                <label><input type="checkbox" id="d-tracking" /> Трекинг</label>
+                <label><input type="checkbox" id="d-block" /> Блокировка</label>
+                <button id="d-save">Сохранить</button>
+                <button id="d-delete" class="danger">Удалить</button>
+              </div>
+              <h3>Удалённые команды</h3>
+              <div class="row">
+                <button data-cmd="lock">Lock</button>
+                <button data-cmd="logoff">Log off</button>
+                <button data-cmd="restart">Restart</button>
+                <button data-cmd="shutdown">Shutdown</button>
+                <button data-cmd="screenshot_now">Скриншот сейчас</button>
+                <button data-cmd="reload_rules">Обновить правила</button>
+              </div>
+              <div class="row">
+                <input id="msg-text" placeholder="Текст сообщения" style="flex:1" />
+                <button id="d-send-msg">Показать сообщение</button>
+              </div>
+              <div class="row">
+                <input id="kill-proc" placeholder="process.exe" />
+                <button id="d-kill">Завершить процесс</button>
+              </div>
+              <h3>Активность за 7 дней</h3>
+              <canvas id="chart-app" height="220"></canvas>
+              <canvas id="chart-day" height="160"></canvas>
+              <h3>Последние события</h3>
+              <table id="events-table">
+                <thead><tr><th>Время</th><th>Тип</th><th>Приложение</th><th>Заголовок</th><th>Сек.</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-rules" class="tab-panel">
+        <div class="panel">
+          <h2>Правила блокировки</h2>
+          <div class="row">
+            <input id="rule-process" placeholder="process.exe" />
+            <input id="rule-reason" placeholder="причина" />
+            <select id="rule-agent"><option value="">Все агенты</option></select>
+            <button id="rule-add">Добавить</button>
+          </div>
+          <table id="rules-table">
+            <thead><tr><th>#</th><th>Процесс</th><th>Агент</th><th>Причина</th><th>Вкл</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tab-screenshots" class="tab-panel">
+        <div class="panel">
+          <h2>Скриншоты</h2>
+          <div class="row">
+            <select id="ss-agent"><option value="">Все агенты</option></select>
+            <select id="ss-range">
+              <option value="60">час</option>
+              <option value="1440" selected>сутки</option>
+              <option value="10080">неделя</option>
+            </select>
+            <button id="ss-refresh">Обновить</button>
+          </div>
+          <div id="ss-grid" class="ss-grid"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-bg"></div>
+    <img id="modal-img" />
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

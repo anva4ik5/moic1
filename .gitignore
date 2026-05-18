@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+.venv-agent/
+server/data/
+*.db
+*.log
+.idea/
+.vscode/
+dist/
+build/
+*.spec.bak
+*.enc
+*.salt
